@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace DemoPurchasingAppBackEnd.Controllers
 {
     [ApiController]
-    [Route("/")]
+    [Route("buyprocedures")]
     public class BuyProcedureController : ControllerBase
     {
         private readonly ILogger<BuyProcedureController> _logger;
