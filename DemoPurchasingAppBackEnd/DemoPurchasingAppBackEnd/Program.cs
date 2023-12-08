@@ -8,7 +8,7 @@ builder.Services.AddCors(options =>
                       builder =>
                       {
                           builder
-                            .WithOrigins("http://localhost:3000", "https://mango-pebble-03becf103.4.azurestaticapps.net/") // specifying the allowed origin
+                            .WithOrigins("http://localhost:3000") // specifying the allowed origin
                             .WithMethods("GET") // defining the allowed HTTP method
                             .AllowAnyHeader(); // allowing any header to be sent
                       });
