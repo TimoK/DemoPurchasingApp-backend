@@ -1,9 +1,10 @@
+using DemoPurchasingAppBackEnd.DataModels;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoPurchasingAppBackEnd.Controllers
 {
     [ApiController]
-    [Route("buyprocedure")]
+    [Route("/")]
     public class BuyProcedureController : ControllerBase
     {
         private readonly ILogger<BuyProcedureController> _logger;
@@ -14,16 +15,16 @@ namespace DemoPurchasingAppBackEnd.Controllers
         }
 
         [HttpGet(Name = "GetBuyProcedure")]
-        public IEnumerable<BuyProcedure> Get()
+        public IEnumerable<BuyProcedureModel> Get()
         {
-            var buyProcedures = new List<BuyProcedure>
+            var buyProcedures = new List<BuyProcedureModel>
             {
-                new BuyProcedure()
+                new BuyProcedureModel()
                 {
                     Title = "Moersleutels",
                     MaxPrice = 25000
                 },
-                new BuyProcedure()
+                new BuyProcedureModel()
                 {
                     Title = "Bedrijfsauto's",
                     MaxPrice = 200340
@@ -33,16 +34,16 @@ namespace DemoPurchasingAppBackEnd.Controllers
         }
 
         [HttpGet("newroute")]
-        public IEnumerable<BuyProcedure> GetNewThings()
+        public IEnumerable<BuyProcedureModel> GetNewThings()
         {
-            var buyProcedures = new List<BuyProcedure>
+            var buyProcedures = new List<BuyProcedureModel>
             {
-                new BuyProcedure()
+                new BuyProcedureModel()
                 {
                     Title = "Andere dingen",
                     MaxPrice = 2500
                 },
-                new BuyProcedure()
+                new BuyProcedureModel()
                 {
                     Title = "Spullen",
                     MaxPrice = 4567
