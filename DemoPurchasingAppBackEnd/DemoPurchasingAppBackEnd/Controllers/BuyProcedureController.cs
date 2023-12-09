@@ -1,4 +1,5 @@
-using DemoPurchasingAppBackEnd.DataModels;
+using DemoPurchasingAppBackEnd.Entities;
+using DemoPurchasingAppBackEnd.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace DemoPurchasingAppBackEnd.Controllers
@@ -7,49 +8,19 @@ namespace DemoPurchasingAppBackEnd.Controllers
     [Route("buyprocedures")]
     public class BuyProcedureController : ControllerBase
     {
-        private readonly ILogger<BuyProcedureController> _logger;
+        private readonly IBuyProcedureService buyProcedureService;
+        private readonly ILogger<BuyProcedureController> logger;
 
-        public BuyProcedureController(ILogger<BuyProcedureController> logger)
+        public BuyProcedureController(IBuyProcedureService buyProcedureService, ILogger<BuyProcedureController> logger)
         {
-            _logger = logger;
+            this.buyProcedureService = buyProcedureService;
+            this.logger = logger;
         }
 
-        [HttpGet(Name = "GetBuyProcedure")]
-        public IEnumerable<BuyProcedureModel> Get()
+        [HttpGet(Name = "GetBuyProcedures")]
+        public IEnumerable<BuyProcedure> Get()
         {
-            var buyProcedures = new List<BuyProcedureModel>
-            {
-                new BuyProcedureModel()
-                {
-                    Title = "Moersleutels",
-                    MaxPrice = 25000
-                },
-                new BuyProcedureModel()
-                {
-                    Title = "Bedrijfsauto's",
-                    MaxPrice = 200340
-                }
-            };
-            return buyProcedures;
-        }
-
-        [HttpGet("newroute")]
-        public IEnumerable<BuyProcedureModel> GetNewThings()
-        {
-            var buyProcedures = new List<BuyProcedureModel>
-            {
-                new BuyProcedureModel()
-                {
-                    Title = "Andere dingen",
-                    MaxPrice = 2500
-                },
-                new BuyProcedureModel()
-                {
-                    Title = "Spullen",
-                    MaxPrice = 4567
-                }
-            };
-            return buyProcedures;
+            return buyProcedureService.GetAll();
         }
     }
 }
