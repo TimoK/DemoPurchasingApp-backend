@@ -17,10 +17,17 @@ namespace DemoPurchasingAppBackEnd.Controllers
             this.logger = logger;
         }
 
-        [HttpGet(Name = "GetBuyProcedures")]
-        public IEnumerable<BuyProcedure> Get()
+        [HttpGet]
+        public ActionResult<IEnumerable<BuyProcedure>> GetAll()
         {
-            return buyProcedureService.GetAll();
+            return Ok(buyProcedureService.GetAll());
+        }
+
+        [HttpPost("{title}")]
+        public IActionResult Create(string title)
+        {
+            buyProcedureService.Create(title);
+            return Ok();
         }
     }
 }

@@ -20,7 +20,7 @@ namespace DemoPurchasingAppBackEnd.Database
         {
             if (webHostEnvironment.IsDevelopment())
             {
-                options.UseNpgsql(configuration.GetConnectionString("WebApiDatabase"));
+                options.UseNpgsql(configuration.GetConnectionString("LOCAL_DATABASE"));
             }
             else
             {
