@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DemoPurchasingAppBackEnd.Entities
 {
@@ -8,6 +7,9 @@ namespace DemoPurchasingAppBackEnd.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string? Title { get ; set; }
-        public double MaxPrice { get; set; }
+        public double Price { get; set; }
+        public CostEnumerationType CostEnumerationType { get; set; }
     }
+
+    public enum CostEnumerationType { NotDefined = 0, Yearly = 1, Quarterly = 2, OneTime = 3 }
 }

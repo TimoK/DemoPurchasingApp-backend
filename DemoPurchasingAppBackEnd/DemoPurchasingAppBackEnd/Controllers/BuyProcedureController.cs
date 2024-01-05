@@ -37,6 +37,20 @@ namespace DemoPurchasingAppBackEnd.Controllers
             return Ok(id);
         }
 
+        [HttpPut]
+        public IActionResult Update([FromBody] BuyProcedure buyProcedure)
+        {
+            if (buyProcedureService.Update(buyProcedure))
+            {
+                return Ok();
+            }
+            else
+            {
+                logger.LogError("No object found with id {Id}", buyProcedure.Id);
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
+        }
+
         [HttpDelete("{id}")]
         public IActionResult Delete(int id)
         {

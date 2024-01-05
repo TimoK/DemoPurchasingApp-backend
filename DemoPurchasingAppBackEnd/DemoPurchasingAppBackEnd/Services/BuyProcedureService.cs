@@ -11,6 +11,7 @@ namespace DemoPurchasingAppBackEnd.Services
         int Create(string title);
         int Create();
         bool Delete(int id);
+        bool Update(BuyProcedure updatedBuyProcedure);
     }
 
 
@@ -52,6 +53,20 @@ namespace DemoPurchasingAppBackEnd.Services
                 return false;
             }
             dbContext.BuyProcedures.Remove(buyProcedure);
+            dbContext.SaveChanges();
+            return true;
+        }
+
+        public bool Update(BuyProcedure updatedBuyProcedure)
+        {
+            var buyProcedure = dbContext.BuyProcedures.SingleOrDefault(x => x.Id == updatedBuyProcedure.Id);
+            if (buyProcedure == null)
+            {
+                return false;
+            }
+
+            dbContext.BuyProcedures.Remove(buyProcedure);
+            dbContext.BuyProcedures.Add(updatedBuyProcedure);
             dbContext.SaveChanges();
             return true;
         }
