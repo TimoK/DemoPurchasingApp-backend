@@ -9,6 +9,8 @@ namespace DemoPurchasingAppBackEnd.Database
         private readonly IWebHostEnvironment webHostEnvironment;
         private readonly ILogger<DatabaseContext> logger;
 
+        public DbSet<BuyProcedure> BuyProcedures { get; set; }
+
         public DatabaseContext(IConfiguration configuration, IWebHostEnvironment webHostEnvironment, ILogger<DatabaseContext> logger)
         {
             this.configuration = configuration;
@@ -27,7 +29,5 @@ namespace DemoPurchasingAppBackEnd.Database
                 options.UseSqlServer(configuration.GetConnectionString("AZURE_SQL_CONNECTIONSTRING"));
             }
         }
-
-        public DbSet<BuyProcedure> BuyProcedures { get; set; }
     }
 }

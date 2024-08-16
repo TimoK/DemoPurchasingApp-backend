@@ -2,73 +2,87 @@
 using System.Linq;
 using DemoPurchasingAppBackEnd.Database;
 using DemoPurchasingAppBackEnd.Entities;
+using DemoPurchasingAppBackEnd.DTOs;
+using Microsoft.EntityFrameworkCore;
+using DemoPurchasingAppBackEnd.Controllers;
 
 namespace DemoPurchasingAppBackEnd.Services
 {
     public interface IBuyProcedureService
     {
-        IEnumerable<BuyProcedure> GetAll();
-        int Create(string title);
-        int Create();
-        bool Delete(int id);
-        bool Update(BuyProcedure updatedBuyProcedure);
+        Task<IEnumerable<BuyProcedureDto>> GetAllAsync();
+        Task<BuyProcedureDto> CreateAsync(string? title);
+        Task<BuyProcedureDto> CreateAsync();
+        Task DeleteAsync(int id);
+        Task<BuyProcedureDto> UpdateAsync(BuyProcedureDto updatedBuyProcedureDto);
     }
 
 
     public class BuyProcedureService : IBuyProcedureService
     {
         private readonly DatabaseContext dbContext;
+        private readonly ILogger<BuyProcedureService> logger;
 
-        public BuyProcedureService(DatabaseContext dbContext)
+        public BuyProcedureService(DatabaseContext dbContext, ILogger<BuyProcedureService> logger)
         {
             this.dbContext = dbContext;
+            this.logger = logger;
         }
 
-        public IEnumerable<BuyProcedure> GetAll()
+        public async Task<IEnumerable<BuyProcedureDto>> GetAllAsync()
         {
-            return dbContext.BuyProcedures;
+            return (await dbContext.BuyProcedures.ToListAsync()).Select(x => GetDto(x));
         }
 
-        public int Create(string? title)
+        public async Task<BuyProcedureDto> CreateAsync(string? title)
         {
             var buyProcedure = new BuyProcedure()
             {
                 Title = title
             };
             dbContext.BuyProcedures.Add(buyProcedure);
-            dbContext.SaveChanges();
-            return buyProcedure.Id;
+            await dbContext.SaveChangesAsync();
+            return GetDto(buyProcedure);
         }
 
-        public int Create()
+        public async Task<BuyProcedureDto> CreateAsync()
         {
-            return Create(title: null);
+            return await CreateAsync(title: null);
         }
 
-        public bool Delete(int id)
+        public async Task DeleteAsync(int id)
         {
             var buyProcedure = dbContext.BuyProcedures.SingleOrDefault(x => x.Id == id);
             if (buyProcedure == null)
             {
-                return false;
+                var errorMessage = string.Format("No object found with id {0}", id);
+                logger.LogError(errorMessage);
+                throw new KeyNotFoundException(errorMessage);
             }
             dbContext.BuyProcedures.Remove(buyProcedure);
-            dbContext.SaveChanges();
-            return true;
+            await dbContext.SaveChangesAsync();
         }
 
-        public bool Update(BuyProcedure updatedBuyProcedure)
+        public async Task<BuyProcedureDto> UpdateAsync(BuyProcedureDto updatedBuyProcedureDto)
         {
-            var buyProcedure = dbContext.BuyProcedures.SingleOrDefault(x => x.Id == updatedBuyProcedure.Id);
+            var buyProcedure = dbContext.BuyProcedures.SingleOrDefault(x => x.Id == updatedBuyProcedureDto.ID);
             if (buyProcedure == null)
             {
-                return false;
+                var errorMessage = string.Format("No object found with id {0}", updatedBuyProcedureDto.ID);
+                logger.LogError(errorMessage);
+                throw new KeyNotFoundException(errorMessage);
             }
+                
+            buyProcedure.Price = updatedBuyProcedureDto.Price;
+            buyProcedure.Title = updatedBuyProcedureDto.Title;
+            buyProcedure.CostEnumerationType = updatedBuyProcedureDto.CostEnumerationType;
+            await dbContext.SaveChangesAsync();
+            return GetDto(buyProcedure);
+        }
 
-            dbContext.BuyProcedures.Remove(buyProcedure);
-            dbContext.BuyProcedures.Add(updatedBuyProcedure);
-            dbContext.SaveChanges();
-            return true;
+        private BuyProcedureDto GetDto(BuyProcedure buyProcedure)
+        {
+            return new BuyProcedureDto(buyProcedure.Id, buyProcedure.Title, buyProcedure.Price, buyProcedure.CostEnumerationType);
         }
     }
 }

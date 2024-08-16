@@ -1,3 +1,4 @@
+using DemoPurchasingAppBackEnd.DTOs;
 using DemoPurchasingAppBackEnd.Entities;
 using DemoPurchasingAppBackEnd.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -18,50 +19,51 @@ namespace DemoPurchasingAppBackEnd.Controllers
         }
 
         [HttpGet]
-        public ActionResult<IEnumerable<BuyProcedure>> GetAll()
+        public async Task<ActionResult<IEnumerable<BuyProcedure>>> GetAllAsync()
         {
-            return Ok(buyProcedureService.GetAll());
+            return Ok(await buyProcedureService.GetAllAsync());
         }
 
         [HttpPost("{title}")]
-        public IActionResult Create(string title)
+        public async Task<CreatedAtActionResult> CreateAsync(string title)
         {
-            var id = buyProcedureService.Create(title);
-            return Ok(id);
+            var dto = await buyProcedureService.CreateAsync(title);
+            return new CreatedAtActionResult(nameof(CreateAsync), nameof(BuyProcedureController), $"{dto.ID}", dto);
         }
 
         [HttpPost]
-        public IActionResult Create()
+        public async Task<CreatedAtActionResult> CreateAsync()
         {
-            var id = buyProcedureService.Create();
-            return Ok(id);
+            var dto = await buyProcedureService.CreateAsync();
+            return new CreatedAtActionResult(nameof(CreateAsync), nameof(BuyProcedureController), $"{dto.ID}", dto);
         }
 
         [HttpPut]
-        public IActionResult Update([FromBody] BuyProcedure buyProcedure)
+        public async Task<ActionResult<BuyProcedureDto>> Update([FromBody] BuyProcedureDto buyProcedureDto)
         {
-            if (buyProcedureService.Update(buyProcedure))
+            try
             {
-                return Ok();
+                return await buyProcedureService.UpdateAsync(buyProcedureDto);
             }
-            else
+            // For a larger project, replace with Exception filter and a custom error object (translation key, readable message)
+            catch (KeyNotFoundException e)
             {
-                logger.LogError("No object found with id {Id}", buyProcedure.Id);
-                return StatusCode(StatusCodes.Status400BadRequest);
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
         }
 
         [HttpDelete("{id}")]
-        public IActionResult Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            if(buyProcedureService.Delete(id))
+            try
             {
+                await buyProcedureService.DeleteAsync(id);
                 return Ok();
             }
-            else
+            // For a larger project, replace with Exception filter and a custom error object (translation key, readable message)
+            catch(KeyNotFoundException e)
             {
-                logger.LogError("No object found with id {Id}", id);
-                return StatusCode(StatusCodes.Status400BadRequest);
+                return StatusCode(StatusCodes.Status400BadRequest, e.Message);
             }
         }
     }
